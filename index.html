@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Shower Registry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth scrolling and modal fade-in */
+        html { scroll-behavior: smooth; }
+        .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-[#fafafa] text-zinc-800 font-sans antialiased selection:bg-zinc-900 selection:text-white">
+
+    <header class="pt-20 pb-16 px-6 text-center max-w-3xl mx-auto">
+        <span class="text-xs font-bold tracking-widest uppercase text-zinc-400 mb-4 block">Baby Shower Registry</span>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight mb-4">Welcome to our celebration.</h1>
+        <p class="text-lg text-zinc-500 font-light leading-relaxed">
+            Your presence is the greatest gift. If you'd like to help us prepare for our little one, you can reserve an item below to help us avoid duplicates.
+        </p>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 pb-24">
+        <div id="gift-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+    </main>
+
+    <div id="reservation-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        
+        <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
+            <div class="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl pointer-events-auto modal-enter border border-zinc-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-zinc-900 tracking-tight" id="modal-title">Reserve Gift</h2>
+                    <button onclick="closeModal()" class="text-zinc-400 hover:text-zinc-900 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <form id="reservation-form">
+                    <input type="hidden" id="selected-gift-id">
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Full Name</label>
+                            <input type="text" id="guest-name" required placeholder="Jane Doe" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition-all placeholder:text-zinc-400">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Email Address</label>
+                            <input type="email" id="guest-email" required placeholder="jane@example.com" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition-all placeholder:text-zinc-400">
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <button type="submit" class="w-full bg-zinc-900 text-white py-3.5 rounded-xl font-medium tracking-wide hover:bg-zinc-800 transition-all focus:ring-4 focus:ring-zinc-200 flex justify-center items-center">
+                            Confirm Reservation
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. CONFIGURATION
+        // ==========================================
+        // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+        const API_URL = "https://script.google.com/macros/s/AKfycbzAxLn27djVRd3FGGcBcCcpPeXv09x0iE31amtWAfs0gXbhemqJQ1W8qrmE5ev9xephsQ/exec"; 
+        
+        // ==========================================
+        // 2. STATE & DOM ELEMENTS
+        // ==========================================
+        let gifts = [];
+        const grid = document.getElementById('gift-grid');
+        const modal = document.getElementById('reservation-modal');
+        const form = document.getElementById('reservation-form');
+
+        // ==========================================
+        // 3. FETCH DATA (GET)
+        // ==========================================
+        async function loadGifts() {
+            grid.innerHTML = '<p class="col-span-full text-center text-zinc-500 py-12 animate-pulse font-medium">Loading registry...</p>';
+            
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error("Network response was not ok");
+                gifts = await response.json();
+                renderGifts();
+            } catch (error) {
+                console.error("Error loading gifts:", error);
+                grid.innerHTML = '<p class="col-span-full text-center text-red-500 py-12">Failed to load gifts. Please check your API URL or refresh.</p>';
+            }
+        }
+
+        // ==========================================
+        // 4. RENDER UI
+        // ==========================================
+        function renderGifts() {
+            grid.innerHTML = '';
+
+            if (gifts.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center text-zinc-500 py-12">No gifts found in the registry yet.</p>';
+                return;
+            }
+
+            gifts.forEach(gift => {
+                const isAvailable = gift.status === 'available';
+                const card = document.createElement('div');
+                card.className = `group relative bg-white rounded-3xl p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-zinc-100 shadow-sm`;
+                
+                card.innerHTML = `
+                    <div class="relative aspect-square overflow-hidden rounded-2xl mb-5 bg-zinc-100">
+                        <img src="${gift.image || 'https://via.placeholder.com/400'}" alt="${gift.name}" class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105 ${!isAvailable ? 'opacity-40 grayscale' : ''}">
+                        
+                        ${!isAvailable ? `
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="bg-white/90 backdrop-blur-md text-zinc-900 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-sm">
+                                    Reserved by ${gift.reservedBy}
+                                </span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="px-2 pb-2">
+                        <div class="flex justify-between items-start mb-1 gap-2">
+                            <h3 class="font-semibold text-zinc-900 text-lg leading-tight">${gift.name}</h3>
+                            <span class="text-zinc-500 font-medium">${gift.price}</span>
+                        </div>
+                        
+                        <a href="${gift.storeUrl}" target="_blank" class="text-sm text-zinc-400 hover:text-zinc-900 transition-colors inline-block mb-6">
+                            View retailer &nearr;
+                        </a>
+                        
+                        ${isAvailable 
+                            ? `<button onclick="openModal('${gift.id}', '${gift.name.replace(/'/g, "\\'")}')" class="w-full bg-zinc-900 text-white py-3.5 rounded-xl font-medium tracking-wide hover:bg-zinc-800 transition-all focus:ring-4 focus:ring-zinc-200">Reserve Gift</button>` 
+                            : `<button disabled class="w-full bg-zinc-100 text-zinc-400 py-3.5 rounded-xl font-medium cursor-not-allowed">Unavailable</button>`
+                        }
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // 5. MODAL LOGIC
+        // ==========================================
+        function openModal(id, name) {
+            document.getElementById('selected-gift-id').value = id;
+            document.getElementById('modal-title').innerText = `Reserve ${name}`;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            form.reset();
+        }
+
+        // ==========================================
+        // 6. SUBMIT RESERVATION (POST)
+        // ==========================================
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Reserving...`;
+            submitBtn.disabled = true;
+            
+            const giftId = document.getElementById('selected-gift-id').value;
+            const guestName = document.getElementById('guest-name').value;
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: JSON.stringify({
+                        id: giftId,
+                        guestName: guestName
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Update local state instantly for snappy UI
+                    const giftIndex = gifts.findIndex(g => String(g.id) === String(giftId));
+                    if (giftIndex !== -1) {
+                        gifts[giftIndex].status = 'reserved';
+                        gifts[giftIndex].reservedBy = guestName;
+                    }
+                    closeModal();
+                    renderGifts();
+                    
+                    // Optional: Give them a nice success feedback
+                    setTimeout(() => alert("Success! Thank you for the gift!"), 100);
+                } else {
+                    alert(result.error || "Something went wrong.");
+                    closeModal();
+                    loadGifts(); // Re-sync with database in case they were beaten to it
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Network error. Please try again.");
+            } finally {
+                submitBtn.innerText = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // ==========================================
+        // 7. INITIALIZE
+        // ==========================================
+        loadGifts();
+    </script>
+</body>
+</html>
