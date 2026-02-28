@@ -13,44 +13,100 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        // A modern, elegant baby shower palette (Sage & Warm Stone)
+                        brand: {
+                            50: '#f2f5f3',
+                            100: '#e1e8e3',
+                            400: '#8ba693', // soft sage accent
+                            800: '#3d5244', // deep green button
+                            900: '#2b3a30', // darker hover
+                        },
+                        sand: {
+                            50: '#FCFCFA',
+                            100: '#F5F4F0',
+                            200: '#EBE9E1'
+                        }
+                    }
                 }
             }
         }
     </script>
     <style>
-        /* Smooth scrolling and modal fade-in */
         html { scroll-behavior: smooth; }
         .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
+        /* A subtle, dreamy gradient blur for the background */
+        .dreamy-bg {
+            position: fixed;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            height: 50vh;
+            background: radial-gradient(circle, rgba(139,166,147,0.15) 0%, rgba(252,252,250,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
     </style>
 </head>
-<body class="bg-[#fafafa] text-zinc-800 font-sans antialiased selection:bg-zinc-900 selection:text-white">
+<body class="bg-sand-50 text-stone-800 font-sans antialiased selection:bg-brand-800 selection:text-white relative overflow-x-hidden">
 
-    <header class="pt-20 pb-16 px-6 text-center max-w-3xl mx-auto">
-        <span class="text-xs font-bold tracking-widest uppercase text-zinc-400 mb-4 block">Baby Shower Registry</span>
-        <h1 class="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight mb-4">Welcome to our celebration.</h1>
-        <p class="text-lg text-zinc-500 font-light leading-relaxed">
-            Your presence is the greatest gift. If you'd like to help us prepare for our little one, you can reserve an item below to help us avoid duplicates.
+    <div class="dreamy-bg"></div>
+
+    <header class="pt-24 pb-12 px-6 text-center max-w-3xl mx-auto relative">
+        <div class="flex justify-center mb-6 text-brand-400">
+            <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+            </svg>
+        </div>
+        
+        <span class="text-xs font-bold tracking-widest uppercase text-brand-800/70 mb-4 block">Baby Shower Registry</span>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-stone-900 tracking-tight mb-5">Welcome to our celebration.</h1>
+        <p class="text-lg text-stone-500 font-light leading-relaxed max-w-2xl mx-auto">
+            Your presence is the greatest gift. If you'd like to help us prepare for our little one, you can browse our essentials or reserve a specific gift below to help us avoid duplicates.
         </p>
     </header>
 
     <main class="max-w-6xl mx-auto px-6 pb-24">
-        <div id="gift-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <div class="mb-20">
+            <div class="mb-10 text-center md:text-left border-b border-stone-200 pb-5">
+                <h2 class="text-2xl font-bold text-stone-800 tracking-tight flex items-center justify-center md:justify-start gap-3">
+                    <svg class="w-5 h-5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                    The Essentials
+                </h2>
+                <p class="text-stone-500 mt-2">You can never have too many of these! Buy as many as you'd like.</p>
             </div>
+            <div id="unlimited-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+        </div>
+
+        <div>
+            <div class="mb-10 text-center md:text-left border-b border-stone-200 pb-5">
+                <h2 class="text-2xl font-bold text-stone-800 tracking-tight flex items-center justify-center md:justify-start gap-3">
+                    <svg class="w-5 h-5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                    Unique Gifts
+                </h2>
+                <p class="text-stone-500 mt-2">Please reserve these items so we don't end up with duplicates.</p>
+            </div>
+            <div id="single-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+        </div>
+
     </main>
 
     <div id="reservation-modal" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
-        
+        <div class="absolute inset-0 bg-stone-900/40 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
-            <div class="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl pointer-events-auto modal-enter border border-zinc-100">
+            <div class="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl pointer-events-auto modal-enter border border-stone-100">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-zinc-900 tracking-tight" id="modal-title">Reserve Gift</h2>
-                    <button onclick="closeModal()" class="text-zinc-400 hover:text-zinc-900 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <h2 class="text-2xl font-bold text-stone-800 tracking-tight" id="modal-title">Reserve Gift</h2>
+                    <button onclick="closeModal()" class="text-stone-400 hover:text-stone-800 transition-colors bg-stone-50 p-2 rounded-full">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
                 
@@ -59,18 +115,13 @@
                     
                     <div class="space-y-5">
                         <div>
-                            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Full Name</label>
-                            <input type="text" id="guest-name" required placeholder="Jane Doe" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition-all placeholder:text-zinc-400">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Email Address</label>
-                            <input type="email" id="guest-email" required placeholder="jane@example.com" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition-all placeholder:text-zinc-400">
+                            <label class="block text-sm font-medium text-stone-600 mb-1.5 ml-1">Guest Name <span class="text-stone-400 font-normal text-xs">(Kept private!Lele won't know!)</span></label>
+                            <input type="text" id="guest-name" required placeholder="Jane Doe" class="w-full bg-sand-50 border border-stone-200 rounded-2xl px-5 py-3.5 outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition-all placeholder:text-stone-400">
                         </div>
                     </div>
                     
                     <div class="mt-8">
-                        <button type="submit" class="w-full bg-zinc-900 text-white py-3.5 rounded-xl font-medium tracking-wide hover:bg-zinc-800 transition-all focus:ring-4 focus:ring-zinc-200 flex justify-center items-center">
+                        <button type="submit" class="w-full bg-brand-800 text-white py-4 rounded-2xl font-medium tracking-wide hover:bg-brand-900 transition-all focus:ring-4 focus:ring-brand-100 flex justify-center items-center shadow-lg shadow-brand-800/20">
                             Confirm Reservation
                         </button>
                     </div>
@@ -83,14 +134,14 @@
         // ==========================================
         // 1. CONFIGURATION
         // ==========================================
-        // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
         const API_URL = "https://script.google.com/macros/s/AKfycbzAxLn27djVRd3FGGcBcCcpPeXv09x0iE31amtWAfs0gXbhemqJQ1W8qrmE5ev9xephsQ/exec"; 
         
         // ==========================================
         // 2. STATE & DOM ELEMENTS
         // ==========================================
         let gifts = [];
-        const grid = document.getElementById('gift-grid');
+        const unlimitedGrid = document.getElementById('unlimited-grid');
+        const singleGrid = document.getElementById('single-grid');
         const modal = document.getElementById('reservation-modal');
         const form = document.getElementById('reservation-form');
 
@@ -98,7 +149,8 @@
         // 3. FETCH DATA (GET)
         // ==========================================
         async function loadGifts() {
-            grid.innerHTML = '<p class="col-span-full text-center text-zinc-500 py-12 animate-pulse font-medium">Loading registry...</p>';
+            unlimitedGrid.innerHTML = '<p class="col-span-full text-center text-brand-400 py-6 animate-pulse font-medium">Loading essentials...</p>';
+            singleGrid.innerHTML = '<p class="col-span-full text-center text-brand-400 py-6 animate-pulse font-medium">Loading gifts...</p>';
             
             try {
                 const response = await fetch(API_URL);
@@ -107,7 +159,8 @@
                 renderGifts();
             } catch (error) {
                 console.error("Error loading gifts:", error);
-                grid.innerHTML = '<p class="col-span-full text-center text-red-500 py-12">Failed to load gifts. Please check your API URL or refresh.</p>';
+                singleGrid.innerHTML = '<p class="col-span-full text-center text-red-400 py-6 bg-red-50 rounded-2xl">Failed to load gifts. Please refresh.</p>';
+                unlimitedGrid.innerHTML = '';
             }
         }
 
@@ -115,49 +168,77 @@
         // 4. RENDER UI
         // ==========================================
         function renderGifts() {
-            grid.innerHTML = '';
+            unlimitedGrid.innerHTML = '';
+            singleGrid.innerHTML = '';
 
             if (gifts.length === 0) {
-                grid.innerHTML = '<p class="col-span-full text-center text-zinc-500 py-12">No gifts found in the registry yet.</p>';
+                singleGrid.innerHTML = '<p class="col-span-full text-center text-stone-400 py-6">No items found in the registry yet.</p>';
                 return;
             }
 
+            let hasUnlimited = false;
+            let hasSingle = false;
+
             gifts.forEach(gift => {
                 const isAvailable = gift.status === 'available';
-                const card = document.createElement('div');
-                card.className = `group relative bg-white rounded-3xl p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-zinc-100 shadow-sm`;
+                const isUnlimited = gift.type && gift.type.toLowerCase() === 'unlimited'; 
                 
-                card.innerHTML = `
-                    <div class="relative aspect-square overflow-hidden rounded-2xl mb-5 bg-zinc-100">
-                        <img src="${gift.image || 'https://via.placeholder.com/400'}" alt="${gift.name}" class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105 ${!isAvailable ? 'opacity-40 grayscale' : ''}">
+                const card = document.createElement('div');
+                card.className = `group relative bg-white rounded-[2rem] p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-800/5 border border-stone-100 flex flex-col`;
+                
+                // Note: The reserved badge now just says "Reserved" with a tiny heart icon, hiding the name!
+                let imageHtml = `
+                    <div class="relative aspect-square overflow-hidden rounded-3xl mb-5 bg-sand-100 shrink-0">
+                        <img src="${gift.image || 'https://via.placeholder.com/400'}" alt="${gift.name}" class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105 ${(!isAvailable && !isUnlimited) ? 'opacity-50 grayscale mix-blend-multiply' : ''}">
                         
-                        ${!isAvailable ? `
+                        ${(!isAvailable && !isUnlimited) ? `
                             <div class="absolute inset-0 flex items-center justify-center">
-                                <span class="bg-white/90 backdrop-blur-md text-zinc-900 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-sm">
-                                    Reserved by ${gift.reservedBy}
+                                <span class="bg-white/95 backdrop-blur-md text-brand-900 text-xs font-bold px-5 py-2.5 rounded-full uppercase tracking-widest shadow-sm flex items-center gap-1.5 border border-brand-50">
+                                    Reserved 
+                                    <svg class="w-3.5 h-3.5 text-brand-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
                                 </span>
                             </div>
                         ` : ''}
                     </div>
-                    
-                    <div class="px-2 pb-2">
-                        <div class="flex justify-between items-start mb-1 gap-2">
-                            <h3 class="font-semibold text-zinc-900 text-lg leading-tight">${gift.name}</h3>
-                            <span class="text-zinc-500 font-medium">${gift.price}</span>
-                        </div>
-                        
-                        <a href="${gift.storeUrl}" target="_blank" class="text-sm text-zinc-400 hover:text-zinc-900 transition-colors inline-block mb-6">
-                            View retailer &nearr;
-                        </a>
-                        
-                        ${isAvailable 
-                            ? `<button onclick="openModal('${gift.id}', '${gift.name.replace(/'/g, "\\'")}')" class="w-full bg-zinc-900 text-white py-3.5 rounded-xl font-medium tracking-wide hover:bg-zinc-800 transition-all focus:ring-4 focus:ring-zinc-200">Reserve Gift</button>` 
-                            : `<button disabled class="w-full bg-zinc-100 text-zinc-400 py-3.5 rounded-xl font-medium cursor-not-allowed">Unavailable</button>`
-                        }
-                    </div>
                 `;
-                grid.appendChild(card);
+
+                let infoHtml = `
+                    <div class="px-3 pb-2 flex-grow flex flex-col">
+                        <div class="flex justify-between items-start mb-1 gap-2">
+                            <h3 class="font-semibold text-stone-800 text-lg leading-tight">${gift.name}</h3>
+                            <span class="text-brand-400 font-medium shrink-0 bg-brand-50 px-2.5 py-1 rounded-lg text-sm">${gift.price}</span>
+                        </div>
+                `;
+
+                if (isUnlimited) {
+                    hasUnlimited = true;
+                    infoHtml += `
+                            <p class="text-sm text-stone-400 mb-6 mt-2 flex-grow">Any amount is appreciated!</p>
+                            <a href="${gift.storeUrl}" target="_blank" class="w-full block text-center bg-sand-100 text-stone-700 py-3.5 rounded-2xl font-medium tracking-wide hover:bg-sand-200 transition-all">Shop Retailer &nearr;</a>
+                        </div>
+                    `;
+                    card.innerHTML = imageHtml + infoHtml;
+                    unlimitedGrid.appendChild(card);
+                } else {
+                    hasSingle = true;
+                    infoHtml += `
+                            <a href="${gift.storeUrl}" target="_blank" class="text-sm text-stone-400 hover:text-brand-400 transition-colors inline-block mb-6 mt-2 flex-grow underline decoration-stone-200 underline-offset-4">
+                                View retailer &nearr;
+                            </a>
+                            
+                            ${isAvailable 
+                                ? `<button onclick="openModal('${gift.id}', '${gift.name.replace(/'/g, "\\'")}')" class="w-full bg-brand-800 text-white py-3.5 rounded-2xl font-medium tracking-wide hover:bg-brand-900 transition-all focus:ring-4 focus:ring-brand-100 mt-auto shadow-sm">Reserve Gift</button>` 
+                                : `<button disabled class="w-full bg-stone-50 text-stone-400 py-3.5 rounded-2xl font-medium cursor-not-allowed mt-auto border border-stone-100">Unavailable</button>`
+                            }
+                        </div>
+                    `;
+                    card.innerHTML = imageHtml + infoHtml;
+                    singleGrid.appendChild(card);
+                }
             });
+            
+            if (!hasUnlimited) unlimitedGrid.innerHTML = '<p class="col-span-full text-stone-400">No essentials listed yet.</p>';
+            if (!hasSingle) singleGrid.innerHTML = '<p class="col-span-full text-stone-400">No unique gifts listed yet.</p>';
         }
 
         // ==========================================
@@ -203,7 +284,6 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Update local state instantly for snappy UI
                     const giftIndex = gifts.findIndex(g => String(g.id) === String(giftId));
                     if (giftIndex !== -1) {
                         gifts[giftIndex].status = 'reserved';
@@ -212,12 +292,11 @@
                     closeModal();
                     renderGifts();
                     
-                    // Optional: Give them a nice success feedback
-                    setTimeout(() => alert("Success! Thank you for the gift!"), 100);
+                    setTimeout(() => alert("Success! Thank you so much for the gift!"), 100);
                 } else {
                     alert(result.error || "Something went wrong.");
                     closeModal();
-                    loadGifts(); // Re-sync with database in case they were beaten to it
+                    loadGifts(); 
                 }
             } catch (error) {
                 console.error("Error:", error);
